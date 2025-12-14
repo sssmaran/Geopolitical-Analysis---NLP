@@ -1,4 +1,4 @@
-# NLP-HashLLM — Multilingual Policy NLP App
+# NLP-HashLLM — Geopolitical Policy Analysis - NLP Application
 
 Analyze public and government discourse around tariffs and trade policy, forecast economic indicators, and compare multilingual summarizers — all in one Streamlit app.
 
