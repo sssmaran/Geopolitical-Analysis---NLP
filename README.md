@@ -1,80 +1,78 @@
-# NLP-HashLLM — Geopolitical Policy Analysis - NLP Application
+# NLP-HashLLM — Multilingual Policy NLP System
 
-Analyze public and government discourse around tariffs and trade policy, forecast economic indicators, and compare multilingual summarizers — all in one Streamlit app.
+A Streamlit application for multilingual policy discourse analysis, macro‑financial forecasting, and comparative abstractive summarization.
 
 ## Overview
-- Interactive sections for exploration and modeling:
-  - Trend Analysis: Temporal sentiment by country, stance detection for statements, and India-focused topic trends.
-  - Predictive Analysis: XGBoost-based forecasts for INR/USD, CNY/USD, and MXN/USD using market features and tariff-news signals.
-  - Summarization: Side-by-side comparison of mT5_XLSum and Pegasus with ROUGE/BLEU evaluation and rationale highlighting.
-- Built with `streamlit`, `transformers`, `xgboost`, `scikit-learn`, `spacy`, `nltk`, and `sentence-transformers`.
+- Trend Analysis: Country‑level temporal sentiment aggregation, statement‑level stance classification (XLM‑R), and India news entity/topic analytics (NER, LDA, sentiment).
+- Predictive Analysis: Exchange‑rate forecasting (INR/USD, CNY/USD, MXN/USD) via gradient‑boosted regression with lag features, moving averages, RSI/MACD, and tariff‑news sentiment/count signals.
+- Summarization: Comparative inference using mT5_XLSum and Pegasus with ROUGE/BLEU evaluation and rationale highlighting via semantic similarity.
+- Technology Stack: `Streamlit`, `Transformers`, `XGBoost`, `scikit‑learn`, `spaCy`, `NLTK`, `sentence‑transformers`.
 
 ## Project Structure
-- `code_files/app.py`: Streamlit entrypoint with sidebar navigation and section routing.
+- `code_files/app.py`: Entrypoint with sidebar navigation and module dispatch.
 - `code_files/sections/`:
-  - `trend_analysis.py`: Reddit sentiment trends, XLM-R stance classifier, India NER/topic/sentiment analytics.
-  - `predictive_analysis.py`: Exchange-rate forecasting for India, China, Mexico.
-  - `summarization.py`: mT5_XLSum vs Pegasus summaries with ROUGE/BLEU and rationale.
-- `code_files/stance_xlmr_model/`: Pretrained XLM-R sequence classifier (tokenizer + weights) for stance detection.
-- `code_files/data/`: CSV datasets used across sections (news, FX, indices, labeled sentiment, topic labels, etc.).
-- Notebooks and reports: `NLP_Final.ipynb`, `NLP_Milestone.ipynb`, `NLP_Final_Report.pdf`, `NLP_Report_2 (1).pdf` for methodology and experiments.
+  - `trend_analysis.py`: Reddit sentiment time series, XLM‑R stance classifier, India NER/topic/sentiment analytics.
+  - `predictive_analysis.py`: FX forecasting pipelines for India, China, Mexico.
+  - `summarization.py`: mT5_XLSum vs Pegasus summarization, ROUGE/BLEU evaluation, rationale extraction.
+- `code_files/stance_xlmr_model/`: Local XLM‑R classifier artifacts (tokenizer and weights).
+- `code_files/data/`: Tabular datasets (news corpora, FX series, indices, labeled sentiment, topic labels).
+- Notebooks/reports: `*.ipynb`, `*.pdf` (exploration and methodology).
 
 ## Requirements
 - Python 3.10+
-- Recommended: CUDA-enabled GPU for faster Transformer inference (CPU works).
+- Optional GPU (CUDA) for accelerated Transformer inference.
 - Install dependencies:
   ```bash
   pip install -r code_files/requirements.txt
   ```
-- spaCy small English model is specified in `requirements.txt`. If installation fails, manually run:
+- If spaCy model installation fails:
   ```bash
   python -m spacy download en_core_web_sm
   ```
-- NLTK resources (`punkt`, `stopwords`, `wordnet`) are downloaded automatically on first run when generating enriched NER/topic data.
+- NLTK resources (`punkt`, `stopwords`, `wordnet`) download automatically on first run.
 
-## Run the App
+## Usage
 ```bash
 streamlit run code_files/app.py
 ```
-- Open the browser link Streamlit prints.
-- Use the sidebar to switch sections: Introduction, Trend Analysis, Predictive Analysis, Summarization.
+- Open the local URL printed by Streamlit.
+- Navigate via sidebar: Introduction, Trend Analysis, Predictive Analysis, Summarization.
 
-## Features
+## Capabilities
 - Trend Analysis
-  - Country-wise Reddit sentiment timeline from `code_files/data/reddit_sentiment_labeled.csv`.
-  - Stance detection (Public vs Government) using the bundled XLM-R model in `code_files/stance_xlmr_model/`.
-  - India news analytics: cleaned NER entities, economic term extraction, LDA topic labels, sentiment, and weekly topic trends.
+  - Country‑wise Reddit sentiment timeline from `code_files/data/reddit_sentiment_labeled.csv`.
+  - Stance detection (Public vs Government) using the XLM‑R classifier.
+  - India news analytics: entity normalization, topic labeling, sentiment scoring, weekly topic trajectories.
 - Predictive Analysis
-  - INR/USD, CNY/USD, MXN/USD forecasting with engineered lags, moving averages, RSI/MACD (TA), and tariff-news signals.
-  - Visual comparison of actual vs predicted with RMSE and R² metrics.
+  - FX forecasting with lagged features, moving averages, RSI/MACD, and tariff‑news exogenous signals.
+  - Diagnostics: RMSE and R²; visual overlays of actual vs predicted.
 - Summarization
-  - mT5_XLSum and Pegasus summaries computed on demand.
-  - ROUGE and BLEU evaluation against an optional reference.
-  - Rationale highlighting: shows input sentences most similar to summary content via `sentence-transformers` embeddings.
+  - mT5_XLSum and Pegasus inference.
+  - ROUGE/BLEU evaluation against optional references.
+  - Rationale extraction via semantic similarity over input sentences.
 
-## Key Data Files
-- `code_files/data/merged_exchange_tariff_data.csv`: INR/USD with tariff sentiment and counts.
-- `code_files/data/CNY_USD_exchange.csv`, `code_files/data/MXN_USD_exchange.csv`: FX time series.
-- `code_files/data/china_news_with_sentiment.csv`, `code_files/data/mexico_news_with_sentiment.csv`: News with sentiment.
-- `code_files/data/India_sector_news_articles.csv`: Source for India topic/NER enrichment.
-- `code_files/data/new_NER.csv`: Generated India enriched dataset (created on first run if missing).
+## Key Data
+- `code_files/data/merged_exchange_tariff_data.csv`: INR/USD merged with tariff sentiment and article counts.
+- `code_files/data/CNY_USD_exchange.csv`, `code_files/data/MXN_USD_exchange.csv`: FX close series.
+- `code_files/data/china_news_with_sentiment.csv`, `code_files/data/mexico_news_with_sentiment.csv`: Tokenized news with sentiment scores.
+- `code_files/data/India_sector_news_articles.csv`: Source corpus for India topic/NER enrichment.
+- `code_files/data/new_NER.csv`: Materialized India enriched dataset (created on first run if absent).
 
-## How It Works
-- App Routing: Sidebar sets `section` and dispatches to analysis modules from `code_files/sections/`.
-- Caching: Heavy models and embeddings are cached using `@st.cache_resource` to avoid repeated downloads and initialization.
+## Architecture
+- Routing: Sidebar `section` dispatches to modules in `code_files/sections/`.
+- Caching: Heavy objects cached via `@st.cache_resource` to reduce initialization cost.
 - Modeling:
-  - Stance classifier uses XLM-R loaded locally; inference runs on GPU if available, else CPU.
-  - FX forecasting uses `XGBRegressor` with log transforms and technical indicators.
-  - Summarizers use `google/pegasus-xsum` and `csebuetnlp/mT5_multilingual_XLSum` via `transformers`.
+  - Stance: XLM‑R sequence classifier (local weights), CPU/GPU adaptive inference.
+  - FX: `XGBRegressor` with log transforms and technical indicators (RSI/MACD), chronological train/test split.
+  - Summarization: `google/pegasus-xsum` and `csebuetnlp/mT5_multilingual_XLSum` via `transformers`.
 
-## Tips
-- If large datasets are missing, ensure `code_files/data/` contains the listed CSVs.
-- First run may take longer due to model and resource downloads.
-- For reproducible results, pin Python and package versions and run in a fresh virtual environment.
+## Operational Notes
+- Ensure `code_files/data/` contains required CSVs; update paths in `sections/*` if reorganized.
+- Initial runs may incur model and resource downloads.
+- For reproducibility, use a virtual environment and pin package versions.
 
 ## Launch Checklist
-- Dependencies installed without errors.
+- Dependencies installed successfully.
 - `code_files/stance_xlmr_model/` present and readable.
-- CSVs in `code_files/data/` present (or adjust paths inside `sections/*`).
-- Start with `streamlit run code_files/app.py` and navigate via sidebar.
-
+- Required CSVs available under `code_files/data/`.
+- Start via `streamlit run code_files/app.py`; navigate via sidebar.
